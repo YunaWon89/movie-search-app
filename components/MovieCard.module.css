@@ -1,0 +1,68 @@
+.card {
+  height: 100%;
+}
+
+.card :global(.ant-card-body) {
+  padding: 16px;
+}
+
+.content {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.posterWrapper {
+  position: relative;
+  flex-shrink: 0;
+  width: 110px;
+  height: 165px;
+  border-radius: 6px;
+  overflow: hidden;
+  background-color: #1f1f1f;
+}
+
+.poster {
+  object-fit: cover;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.title {
+  margin: 0 !important;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.overview {
+  margin: 4px 0 0 !important;
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.65);
+}
+
+.genres {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 2px 0;
+}
+
+.genreTag {
+  margin: 0 !important;
+  border-radius: 6px;
+  border-color: #d9d9d9;
+  background-color: #ffffff;
+  color: rgba(0, 0, 0, 0.85);
+  font-size: 13px;
+  padding: 1px 10px;
+}
