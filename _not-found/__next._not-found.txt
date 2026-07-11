@@ -2,4 +2,4 @@
 2:I[39756,["/movie-search-app/_next/static/chunks/39yk-frti3sn7.js","/movie-search-app/_next/static/chunks/25k68qhaswqm-.js","/movie-search-app/_next/static/chunks/25il-6bte7nwn.js"],"default"]
 3:I[37457,["/movie-search-app/_next/static/chunks/39yk-frti3sn7.js","/movie-search-app/_next/static/chunks/25k68qhaswqm-.js","/movie-search-app/_next/static/chunks/25il-6bte7nwn.js"],"default"]
 4:[]
-0:{"rsc":["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","template":["$","$L3",null,{}]}]]}],"isPartial":false,"staleTime":300,"varyParams":"$W4","buildId":"Vb6xXIqHs1lCSVcfCi9K_"}
+0:{"rsc":["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","template":["$","$L3",null,{}]}]]}],"isPartial":false,"staleTime":300,"varyParams":"$W4","buildId":"rkYNyI1HpkVvGXCTvMqg2"}
