@@ -38,6 +38,10 @@ export default function MovieCard({ movie }: MovieCardProps) {
             {movie.title}
           </Title>
 
+          <Text type="secondary" className={styles.meta}>
+            {formatMovieDate(movie.release_date)}
+          </Text>
+
           <div className={styles.genres}>
             {genres.map((genre) => (
               <Tag key={genre} className={styles.genreTag}>
@@ -45,10 +49,6 @@ export default function MovieCard({ movie }: MovieCardProps) {
               </Tag>
             ))}
           </div>
-
-          <Text type="secondary" className={styles.meta}>
-            {genres.join(" | ")}
-          </Text>
 
           <Paragraph className={styles.overview}>
             {truncateText(movie.overview, OVERVIEW_MAX_LENGTH)}
