@@ -12,7 +12,7 @@
     "format:check": "prettier --check .",
     "prepare": "husky",
     "predeploy": "next build",
-    "deploy": "gh-pages -d out"
+    "deploy": "gh-pages -d out --dotfiles"
   },
   "dependencies": {
     "@ant-design/icons": "^6.3.2",
