@@ -1,10 +1,14 @@
 import type { NextConfig } from "next";
 
+const isGithubPagesBuild = process.env.DEPLOY_TARGET === "github-pages";
+
 const nextConfig: NextConfig = {
-  output: "export",
-  basePath: "/movie-search-app",
+  ...(isGithubPagesBuild && {
+    output: "export",
+    basePath: "/movie-search-app",
+  }),
   images: {
-    unoptimized: true,
+    unoptimized: isGithubPagesBuild,
     remotePatterns: [
       {
         protocol: "https",
