@@ -9,9 +9,9 @@ interface MovieGridProps {
 export default function MovieGrid({ movies }: MovieGridProps) {
   return (
     <Row gutter={[16, 16]}>
-      {movies.map((movie) => (
+      {movies.map((movie, index) => (
         <Col key={movie.id} xs={24} md={12}>
-          <MovieCard movie={movie} />
+          <MovieCard movie={movie} priority={index === 0} />
         </Col>
       ))}
     </Row>

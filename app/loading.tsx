@@ -11,7 +11,7 @@ export default function Loading() {
           minHeight: "60vh",
         }}
       >
-        <Spin size="large" tip="Loading movies..." />
+        <Spin size="large" description="Loading movies..." />
       </div>
     </main>
   );

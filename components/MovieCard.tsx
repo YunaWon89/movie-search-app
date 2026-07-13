@@ -14,9 +14,10 @@ const OVERVIEW_MAX_LENGTH = 140;
 
 interface MovieCardProps {
   movie: Movie;
+  priority?: boolean;
 }
 
-export default function MovieCard({ movie }: MovieCardProps) {
+export default function MovieCard({ movie, priority = false }: MovieCardProps) {
   const genres = getPlaceholderGenres();
   const posterUrl = getPosterUrl(movie.poster_path);
 
@@ -30,6 +31,7 @@ export default function MovieCard({ movie }: MovieCardProps) {
             fill
             sizes="110px"
             className={styles.poster}
+            priority={priority}
           />
         </div>
 

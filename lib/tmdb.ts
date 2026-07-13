@@ -1,6 +1,8 @@
 import "server-only";
 import type { MovieSearchResponse } from "@/types/movie";
 
+export const DEFAULT_SEARCH_QUERY = "return";
+
 const TMDB_BASE_URL = process.env.TMDB_BASE_URL ?? "https://api.themoviedb.org/3";
 
 function getApiKey(): string {

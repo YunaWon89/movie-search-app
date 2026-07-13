@@ -1,0 +1,25 @@
+import { Empty } from "antd";
+import { searchMovies } from "@/lib/tmdb";
+import MovieGrid from "@/components/MovieGrid";
+import MoviePagination from "@/components/MoviePagination";
+
+interface MovieResultsProps {
+  query: string;
+  page: number;
+}
+
+export default async function MovieResults({ query, page }: MovieResultsProps) {
+  const data = await searchMovies(query, page);
+  const movies = data.results;
+
+  if (movies.length === 0) {
+    return <Empty description={`No movies found for "${query}"`} style={{ marginTop: 48 }} />;
+  }
+
+  return (
+    <>
+      <MovieGrid movies={movies} />
+      <MoviePagination currentPage={data.page} totalResults={data.total_results} />
+    </>
+  );
+}
