@@ -1,5 +1,6 @@
 .card {
   height: 100%;
+  position: relative;
 }
 
 .card :global(.ant-card-body) {

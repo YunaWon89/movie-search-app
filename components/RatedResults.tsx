@@ -1,24 +1,37 @@
 import { cookies } from "next/headers";
 import { Empty } from "antd";
-import { searchMovies } from "@/lib/tmdb";
+import { getRatedMovies } from "@/lib/tmdb";
 import { GUEST_SESSION_COOKIE } from "@/lib/constants";
 import MovieGrid from "@/components/MovieGrid";
 import MoviePagination from "@/components/MoviePagination";
 
-interface MovieResultsProps {
-  query: string;
+interface RatedResultsProps {
   page: number;
 }
 
-export default async function MovieResults({ query, page }: MovieResultsProps) {
+export default async function RatedResults({ page }: RatedResultsProps) {
   const cookieStore = await cookies();
   const guestSessionId = cookieStore.get(GUEST_SESSION_COOKIE)?.value;
 
-  const data = await searchMovies(query, page, guestSessionId);
+  if (!guestSessionId) {
+    return (
+      <Empty
+        description="No guest session found. Please refresh the page."
+        style={{ marginTop: 48 }}
+      />
+    );
+  }
+
+  const data = await getRatedMovies(guestSessionId, page);
   const movies = data.results;
 
   if (movies.length === 0) {
-    return <Empty description={`No movies found for "${query}"`} style={{ marginTop: 48 }} />;
+    return (
+      <Empty
+        description="You haven't rated any movies yet. Rate a movie from the Search tab!"
+        style={{ marginTop: 48 }}
+      />
+    );
   }
 
   return (

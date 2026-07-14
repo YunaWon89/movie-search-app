@@ -1,9 +1,9 @@
 import { Suspense } from "react";
 import { Spin } from "antd";
-import Title from "antd/es/typography/Title";
 import { DEFAULT_SEARCH_QUERY } from "@/lib/tmdb";
 import SearchBar from "@/components/SearchBar";
 import MovieResults from "@/components/MovieResults";
+import PageHeader from "@/components/PageHeader";
 
 interface HomePageProps {
   searchParams: Promise<{ query?: string; page?: string }>;
@@ -17,11 +17,9 @@ export default async function HomePage({ searchParams }: HomePageProps) {
 
   return (
     <main className="page-container">
-      <Title level={3} style={{ textAlign: "center" }}>
-        Movie Search
-      </Title>
+      <PageHeader />
 
-      <div style={{ maxWidth: 700, margin: "0 auto 24px" }}>
+      <div style={{ maxWidth: 700, margin: "24px auto" }}>
         <SearchBar />
       </div>
 
