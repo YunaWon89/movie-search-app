@@ -14,7 +14,7 @@ export default async function MovieResults({ query, page }: MovieResultsProps) {
   const cookieStore = await cookies();
   const guestSessionId = cookieStore.get(GUEST_SESSION_COOKIE)?.value;
 
-  const data = await searchMovies(query, page);
+  const data = await searchMovies(query, page, guestSessionId);
   const movies = data.results;
 
   if (movies.length === 0) {
