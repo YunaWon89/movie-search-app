@@ -1,6 +1,6 @@
 ## Live Demo
 
-Deployed on GitHub Pages: 
+Deployed on GitHub Pages:
 
 ## Deployment
 
