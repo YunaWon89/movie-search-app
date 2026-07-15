@@ -1,6 +1,6 @@
 ## Live Demo
 
-Deployed on GitHub Pages:
+Deployed on Vercel: https://movie-search-app-swart-theta.vercel.app/
 
 ## Deployment
 
