@@ -1,6 +1,6 @@
 ## Live Demo
 
-Deployed on GitHub Pages: https://yunawon89.github.io/movie-search-app/
+Deployed on GitHub Pages: 
 
 ## Deployment
 
