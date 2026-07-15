@@ -19,19 +19,52 @@ function getApiKey(): string {
   return apiKey;
 }
 
+export async function getRatedMovies(
+  guestSessionId: string,
+  page = 1,
+): Promise<RatedMoviesResponse> {
+  const url = new URL(`${TMDB_BASE_URL}/guest_session/${guestSessionId}/rated/movies`);
+  url.searchParams.set("page", String(page));
+  url.searchParams.set("language", "en-US");
+  url.searchParams.set("sort_by", "created_at.desc");
+
+  const response = await fetch(url.toString(), {
+    headers: {
+      Authorization: `Bearer ${getApiKey()}`,
+      Accept: "application/json",
+    },
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      `Failed to fetch rated movies from TMDB: ${response.status} ${response.statusText}`,
+    );
+  }
+
+  return response.json() as Promise<RatedMoviesResponse>;
+}
+
 async function getRatedMoviesMap(guestSessionId: string): Promise<Map<number, number>> {
   const ratingsMap = new Map<number, number>();
-  let page = 1;
-  let totalPages = 1;
 
-  do {
-    const data = await getRatedMovies(guestSessionId, page);
-    data.results.forEach((movie) => {
-      ratingsMap.set(movie.id, movie.rating);
-    });
-    totalPages = data.total_pages;
-    page += 1;
-  } while (page <= totalPages && page <= 5);
+  try {
+    let page = 1;
+    let totalPages = 1;
+
+    do {
+      const data = await getRatedMovies(guestSessionId, page);
+      data.results.forEach((movie) => {
+        ratingsMap.set(movie.id, movie.rating);
+      });
+      totalPages = data.total_pages;
+      page += 1;
+    } while (page <= totalPages && page <= 5);
+  } catch {
+    // Guest session may be invalid/expired — degrade gracefully without
+    // attaching personal ratings, rather than surfacing this in the dev overlay.
+  }
+
   return ratingsMap;
 }
 
@@ -65,7 +98,6 @@ export async function searchMovies(
       Authorization: `Bearer ${getApiKey()}`,
       Accept: "application/json",
     },
-
     cache: guestSessionId ? "no-store" : undefined,
     next: guestSessionId ? undefined : { revalidate: 3600 },
   });
@@ -146,30 +178,4 @@ export async function rateMovie(
   if (!response.ok) {
     throw new Error(`Failed to rate movie: ${response.status} ${response.statusText}`);
   }
-}
-
-export async function getRatedMovies(
-  guestSessionId: string,
-  page = 1,
-): Promise<RatedMoviesResponse> {
-  const url = new URL(`${TMDB_BASE_URL}/guest_session/${guestSessionId}/rated/movies`);
-  url.searchParams.set("page", String(page));
-  url.searchParams.set("language", "en-US");
-  url.searchParams.set("sort_by", "created_at.desc");
-
-  const response = await fetch(url.toString(), {
-    headers: {
-      Authorization: `Bearer ${getApiKey()}`,
-      Accept: "application/json",
-    },
-    cache: "no-store",
-  });
-
-  if (!response.ok) {
-    throw new Error(
-      `Failed to fetch rated movies from TMDB: ${response.status} ${response.statusText}`,
-    );
-  }
-
-  return response.json() as Promise<RatedMoviesResponse>;
 }

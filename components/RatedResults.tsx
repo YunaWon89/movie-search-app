@@ -22,7 +22,18 @@ export default async function RatedResults({ page }: RatedResultsProps) {
     );
   }
 
-  const data = await getRatedMovies(guestSessionId, page);
+  let data;
+  try {
+    data = await getRatedMovies(guestSessionId, page);
+  } catch {
+    return (
+      <Empty
+        description="Your session has expired. Please refresh the page to start a new one."
+        style={{ marginTop: 48 }}
+      />
+    );
+  }
+
   const movies = data.results;
 
   if (movies.length === 0) {
