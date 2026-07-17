@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { Rate, message } from "antd";
-import { rateMovieAction } from "@/lib/actions";
+import { rateMovieAction } from "@/lib/api";
 
 interface MovieRatingProps {
   movieId: number;

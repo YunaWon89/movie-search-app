@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { createGuestSession } from "@/lib/tmdb";
-import { GUEST_SESSION_COOKIE } from "@/lib/constants";
+import { createGuestSession } from "@/lib/api";
+import { guestSessionCookieName } from "@/lib/constants";
 
 export async function proxy(request: NextRequest) {
-  const existingSessionId = request.cookies.get(GUEST_SESSION_COOKIE)?.value;
+  const existingSessionId = request.cookies.get(guestSessionCookieName)?.value;
 
   if (existingSessionId) {
     return NextResponse.next();
@@ -14,7 +14,7 @@ export async function proxy(request: NextRequest) {
     const session = await createGuestSession();
     const response = NextResponse.next();
 
-    response.cookies.set(GUEST_SESSION_COOKIE, session.guest_session_id, {
+    response.cookies.set(guestSessionCookieName, session.guest_session_id, {
       path: "/",
       sameSite: "lax",
       maxAge: 60 * 60 * 24,

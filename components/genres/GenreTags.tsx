@@ -2,7 +2,7 @@
 
 import { Tag } from "antd";
 import { useGenreNames } from "./GenreContext";
-import styles from "./MovieCard.module.css";
+import styles from "./GenreTags.module.css";
 
 interface GenreTagsProps {
   genreIds: number[];

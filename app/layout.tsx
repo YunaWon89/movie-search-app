@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
-import { ThemeProvider } from "@/components/ThemeProvider";
-import { GenreProvider } from "@/components/GenreContext";
-import { getGenres } from "@/lib/tmdb";
+import { ThemeProvider } from "@/components/theme/ThemeProvider";
+import { GenreProvider } from "@/components/genres/GenreContext";
+import { getGenres } from "@/lib/api";
 import type { Genre } from "@/types/movie";
 import "./globals.css";
 

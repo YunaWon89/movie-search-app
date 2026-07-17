@@ -1,4 +1,7 @@
-import "server-only";
+"use server";
+
+import { cookies } from "next/headers";
+import { revalidatePath } from "next/cache";
 import type {
   MovieSearchResponse,
   Genre,
@@ -6,10 +9,9 @@ import type {
   GuestSessionResponse,
   RatedMoviesResponse,
 } from "@/types/movie";
+import { guestSessionCookieName } from "@/lib/constants";
 
 const TMDB_BASE_URL = process.env.TMDB_BASE_URL ?? "https://api.themoviedb.org/3";
-
-export const DEFAULT_SEARCH_QUERY = "return";
 
 function getApiKey(): string {
   const apiKey = process.env.TMDB_API_KEY;
@@ -29,10 +31,7 @@ export async function getRatedMovies(
   url.searchParams.set("sort_by", "created_at.desc");
 
   const response = await fetch(url.toString(), {
-    headers: {
-      Authorization: `Bearer ${getApiKey()}`,
-      Accept: "application/json",
-    },
+    headers: { Authorization: `Bearer ${getApiKey()}`, Accept: "application/json" },
     cache: "no-store",
   });
 
@@ -54,15 +53,12 @@ async function getRatedMoviesMap(guestSessionId: string): Promise<Map<number, nu
 
     do {
       const data = await getRatedMovies(guestSessionId, page);
-      data.results.forEach((movie) => {
-        ratingsMap.set(movie.id, movie.rating);
-      });
+      data.results.forEach((movie) => ratingsMap.set(movie.id, movie.rating));
       totalPages = data.total_pages;
       page += 1;
     } while (page <= totalPages && page <= 5);
   } catch {
-    // Guest session may be invalid/expired — degrade gracefully without
-    // attaching personal ratings, rather than surfacing this in the dev overlay.
+    // Guest session may be invalid/expired — degrade gracefully.
   }
 
   return ratingsMap;
@@ -73,13 +69,8 @@ async function attachRatings(
   guestSessionId: string,
 ): Promise<MovieSearchResponse> {
   const ratingsMap = await getRatedMoviesMap(guestSessionId);
-
-  const resultsWithRatings = data.results.map((movie) => ({
-    ...movie,
-    rating: ratingsMap.get(movie.id),
-  }));
-
-  return { ...data, results: resultsWithRatings };
+  const results = data.results.map((movie) => ({ ...movie, rating: ratingsMap.get(movie.id) }));
+  return { ...data, results };
 }
 
 export async function searchMovies(
@@ -94,10 +85,7 @@ export async function searchMovies(
   url.searchParams.set("language", "en-US");
 
   const response = await fetch(url.toString(), {
-    headers: {
-      Authorization: `Bearer ${getApiKey()}`,
-      Accept: "application/json",
-    },
+    headers: { Authorization: `Bearer ${getApiKey()}`, Accept: "application/json" },
     cache: guestSessionId ? "no-store" : undefined,
     next: guestSessionId ? undefined : { revalidate: 3600 },
   });
@@ -107,26 +95,12 @@ export async function searchMovies(
   }
 
   const data = (await response.json()) as MovieSearchResponse;
-
-  if (guestSessionId) {
-    return attachRatings(data, guestSessionId);
-  }
-
-  return data;
-}
-
-export function getPosterUrl(posterPath: string | null, size: "w342" | "w500" = "w342"): string {
-  if (!posterPath) return "/poster-placeholder.svg";
-  const imageBase = process.env.TMDB_IMAGE_BASE_URL ?? "https://image.tmdb.org/t/p";
-  return `${imageBase}/${size}${posterPath}`;
+  return guestSessionId ? attachRatings(data, guestSessionId) : data;
 }
 
 export async function createGuestSession(): Promise<GuestSessionResponse> {
   const response = await fetch(`${TMDB_BASE_URL}/authentication/guest_session/new`, {
-    headers: {
-      Authorization: `Bearer ${getApiKey()}`,
-      Accept: "application/json",
-    },
+    headers: { Authorization: `Bearer ${getApiKey()}`, Accept: "application/json" },
     cache: "no-store",
   });
 
@@ -141,10 +115,7 @@ export async function createGuestSession(): Promise<GuestSessionResponse> {
 
 export async function getGenres(): Promise<Genre[]> {
   const response = await fetch(`${TMDB_BASE_URL}/genre/movie/list?language=en-US`, {
-    headers: {
-      Authorization: `Bearer ${getApiKey()}`,
-      Accept: "application/json",
-    },
+    headers: { Authorization: `Bearer ${getApiKey()}`, Accept: "application/json" },
     next: { revalidate: 86400 },
   });
 
@@ -178,4 +149,18 @@ export async function rateMovie(
   if (!response.ok) {
     throw new Error(`Failed to rate movie: ${response.status} ${response.statusText}`);
   }
+}
+
+export async function rateMovieAction(movieId: number, rating: number): Promise<void> {
+  const cookieStore = await cookies();
+  const guestSessionId = cookieStore.get(guestSessionCookieName)?.value;
+
+  if (!guestSessionId) {
+    throw new Error("No guest session found. Please refresh the page and try again.");
+  }
+
+  await rateMovie(movieId, guestSessionId, rating);
+
+  revalidatePath("/");
+  revalidatePath("/rated");
 }
