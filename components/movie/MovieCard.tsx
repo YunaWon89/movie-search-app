@@ -8,8 +8,7 @@ import { getPosterUrl } from "@/lib/media";
 import { formatMovieDate } from "@/utils/date";
 import { truncateText } from "@/utils/truncate";
 import GenreTags from "@/components/genres/GenreTags";
-import RatingBadge from "./RatingBadge";
-import MovieRating from "./MovieRating";
+import MovieRatingControls from "./MovieRatingControls";
 import styles from "./MovieCard.module.css";
 
 const OVERVIEW_MAX_LENGTH = 140;
@@ -24,8 +23,6 @@ export default function MovieCard({ movie, priority = false }: MovieCardProps) {
 
   return (
     <Card className={styles.card} variant="outlined">
-      <RatingBadge rating={movie.vote_average} />
-
       <div className={styles.content}>
         <div className={styles.posterWrapper}>
           <Image
@@ -52,10 +49,14 @@ export default function MovieCard({ movie, priority = false }: MovieCardProps) {
           <Paragraph className={styles.overview}>
             {truncateText(movie.overview, OVERVIEW_MAX_LENGTH)}
           </Paragraph>
-
-          <MovieRating movieId={movie.id} initialRating={movie.rating ?? 0} />
         </div>
       </div>
+
+      <MovieRatingControls
+        movieId={movie.id}
+        voteAverage={movie.vote_average}
+        initialUserRating={movie.rating ?? 0}
+      />
     </Card>
   );
 }
